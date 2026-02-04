@@ -18,8 +18,13 @@ const App = () => {
       name: newName
     }
     console.log(newNameToList)
-    setPersons(persons.concat(newNameToList))
-    setNewName("")
+    if (persons.some(person => person.name === newNameToList.name)) {
+      alert(`${newNameToList.name} is already in the phonebook!`)
+    }
+    else {
+      setPersons(persons.concat(newNameToList))
+      setNewName("")
+    }
   }
 
   return (
