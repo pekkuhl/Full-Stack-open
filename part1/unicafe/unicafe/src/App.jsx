@@ -8,22 +8,29 @@ const Button = (props) => {
   return <button onClick={props.function}>{props.text}</button>
 }
 
-const Display = (props) => {
-  return <div>{props.text} {props.counter} </div> 
+const Statistics = (props) => {
+  if (props.good !== 0 || props.neutral !== 0 || props.bad !== 0 ) {
+    return (
+    <div>
+      <h1>{props.headerText}</h1>
+      <div>{props.displayGoodText} {props.goodCounter} </div>
+      <div>{props.displayNeutralText} {props.neutralCounter} </div>
+      <div>{props.displayBadText} {props.badCounter} </div>
+      <div>{props.totalText} {props.good + props.neutral + props.bad}  </div>
+      <div> {props.averageText} {(props.good - props.bad)/ (props.good + props.bad + props.neutral) }</div>
+      <div> {props.positiveText} {((props.good) / (props.good + props.bad + props.neutral))*100} %</div>
+    </div>
+  )
+  }
+  else {
+    return (
+      <div>
+        <h1>{props.headerText}</h1>
+        <p> no feedback given </p>
+      </div>)
+  }
+  
 }
-
-const Total = (props) => {
-  return <div> {props.text} {props.good + props.neutral + props.bad}  </div>
-}
-
-const Average = (props) => {
-  return <div> {props.text} {(props.good - props.bad)/ (props.good + props.bad + props.neutral) }  </div>
-}
-
-const Positive = (props) => {
-  return <div> {props.text} {((props.good) / (props.good + props.bad + props.neutral))*100} %</div>
-}
-
 
 
 
@@ -55,15 +62,14 @@ const giveBadReview = () => {
       <Button  function={giveNeutralReview} text="neutral" />
       <Button function={giveBadReview} text= "bad" />
 
-
-      <Header text="statistics" />
-      <Display text="good" counter={good} />
-      <Display text="neutral" counter={neutral} />
-      <Display text="bad" counter={bad} />
-      <Total text="total" good={good} neutral={neutral} bad={bad} />
-      <Average text="average" good={good} bad={bad} neutral={neutral} />
-      <Positive text="positive" good={good} bad={bad} neutral={neutral} />
-
+      <Statistics headerText="statistics"
+      displayGoodText="good" goodCounter={good}
+      displayNeutralText="neutral" neutralCounter={neutral}
+      displayBadText="bad" badCounter={bad}
+      totalText="total"
+      averageText="average"
+      positiveText="positive"
+      good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
