@@ -14,18 +14,52 @@ const StatisticLine = (props) => {
   )
 } 
 
+const Table = (props) => {
+  return (
+    <table>
+      <tbody>
+      <tr>
+        <td>{props.displayGoodText}</td>
+        <td>{props.goodCounter}</td>
+      </tr>
+      <tr>
+        <td>{props.displayNeutralText}</td>
+        <td>{props.neutralCounter} </td>
+      </tr>
+      <tr>
+        <td>{props.displayBadText}</td>
+        <td>{props.badCounter}</td>
+      </tr>
+      <tr>
+        <td><StatisticLine text="total" /></td>
+        <td><StatisticLine value={props.total} /></td>
+      </tr>
+      <tr>
+        <td><StatisticLine text="average"/></td>
+        <td><StatisticLine value={props.average.toFixed(1)} /></td>
+      </tr>
+      <tr>
+        <td><StatisticLine text="positive" /></td>
+        <td><StatisticLine value={props.positive.toFixed(1) +"%"}/></td>
+      </tr>
+      </tbody>
+    </table>
+  )
+}
+
 const Statistics = (props) => {
+  console.log(props)
   if (props.good !== 0 || props.neutral !== 0 || props.bad !== 0 ) {
     return (
     <div>
       <h1>{props.headerText}</h1>
-      <div>{props.displayGoodText} {props.goodCounter} </div>
-      <div>{props.displayNeutralText} {props.neutralCounter} </div>
-      <div>{props.displayBadText} {props.badCounter} </div>
-      <StatisticLine text="total" value={props.total} />
-      <StatisticLine text="average" value={props.average} />
-      <StatisticLine text="positive" value={props.positive +"%"}/>
+      <Table displayGoodText={props.displayGoodText} goodCounter={props.goodCounter}
+      displayNeutralText={props.displayNeutralText} neutralCounter={props.neutralCounter}
+      displayBadText={props.displayBadText} badCounter={props.badCounter}
+      total={props.total} average={props.average} positive={props.positive}
+      good={props.good} neutral={props.neutral} bad={props.bad}  />
     </div>
+
   )
   }
   else {
