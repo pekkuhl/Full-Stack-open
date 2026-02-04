@@ -8,6 +8,12 @@ const Button = (props) => {
   return <button onClick={props.function}>{props.text}</button>
 }
 
+const StatisticLine = (props) => {
+  return (
+    <div> {props.text} {props.value} </div>
+  )
+} 
+
 const Statistics = (props) => {
   if (props.good !== 0 || props.neutral !== 0 || props.bad !== 0 ) {
     return (
@@ -16,9 +22,9 @@ const Statistics = (props) => {
       <div>{props.displayGoodText} {props.goodCounter} </div>
       <div>{props.displayNeutralText} {props.neutralCounter} </div>
       <div>{props.displayBadText} {props.badCounter} </div>
-      <div>{props.totalText} {props.good + props.neutral + props.bad}  </div>
-      <div> {props.averageText} {(props.good - props.bad)/ (props.good + props.bad + props.neutral) }</div>
-      <div> {props.positiveText} {((props.good) / (props.good + props.bad + props.neutral))*100} %</div>
+      <StatisticLine text="total" value={props.total} />
+      <StatisticLine text="average" value={props.average} />
+      <StatisticLine text="positive" value={props.positive +"%"}/>
     </div>
   )
   }
@@ -39,6 +45,10 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+
+  const total = (good + neutral + bad)
+  const average = ((good - bad) / (total))
+  const positive = (good / (total)) * 100
 
   const giveGoodReview = () => {
   setGood(good + 1)
@@ -66,9 +76,7 @@ const giveBadReview = () => {
       displayGoodText="good" goodCounter={good}
       displayNeutralText="neutral" neutralCounter={neutral}
       displayBadText="bad" badCounter={bad}
-      totalText="total"
-      averageText="average"
-      positiveText="positive"
+      total={total} average={average} positive={positive}
       good={good} neutral={neutral} bad={bad} />
     </div>
   )
