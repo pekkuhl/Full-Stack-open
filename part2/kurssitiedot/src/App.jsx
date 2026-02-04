@@ -32,14 +32,18 @@ const Course = ({course}) => {
     <div>
       <Header courseName={course.name} />
       <Content courseParts={course.parts}/>
+      <Total courseParts={course.parts} />
     </div>
   )
 }
 
 
-const Total = (props) => {
+const Total = ({courseParts}) => {
+  const totalExerciseArray = courseParts.map(part => part.exercises)
+  const total = totalExerciseArray.reduce((prev, cur) => prev + cur,0)
+  console.log(total)
   return(
-    <p>Number of exercises {props.course.parts[0].exercises + props.course.parts[1].exercises + props.course.parts[2].exercises}</p>
+    <p>total of {total} exercises</p>
   )
 }
 
