@@ -12,6 +12,16 @@ const VoteCounter = (props) => {
   return <p> has {props.selectedAnectode} votes </p>
 }
 
+const DisplayMostVotes = (props) => {
+  return (
+    <div>
+      <h1> {props.text} </h1>
+      <p> {props.anecdoteWithMostVotes} </p>
+      <p> has {props.mostVotes} </p>
+    </div>
+  )
+}
+
 
 const App = () => {
   const anecdotes = [
@@ -37,21 +47,27 @@ const App = () => {
   const voted = () => {
     const copy = [...votes]
     copy[selected] += 1
-    console.log("copy",copy)
-
     setVotes(copy)
-    console.log(votes)
   }
 
- 
-
+  const highestIndex = () => {
+    const mostVotes = Math.max(...votes)
+    console.log(votes.indexOf(mostVotes))
+    return votes.indexOf(mostVotes)
+  }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
-      <RandomiseButton text="Random Anecdote" function={randomAnecdote} />
-      <VoteBtn text="vote" function={voted} />
       <VoteCounter selectedAnectode={votes[selected]}/>
+      <RandomiseButton text="Random Anecdote" function={randomAnecdote} />
+      
+      <VoteBtn text="vote" function={voted} />
+      <DisplayMostVotes text="Anecdote with most votes"
+      anecdoteWithMostVotes={anecdotes[highestIndex()]}
+      mostVotes={votes[highestIndex()]} />
+      
     </div>
     
   )
