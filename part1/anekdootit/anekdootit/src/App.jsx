@@ -4,6 +4,14 @@ const RandomiseButton = (props) => {
   return <div><button onClick={props.function}> {props.text} </button></div>
 }
 
+const VoteBtn = (props) => {
+  return <button onClick={props.function}> {props.text} </button>
+}
+
+const VoteCounter = (props) => {
+  return <p> has {props.selectedAnectode} votes </p>
+}
+
 
 const App = () => {
   const anecdotes = [
@@ -18,18 +26,32 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
 
   const randomAnecdote = () => {
     const randomIndex = Math.floor(Math.random() * anecdotes.length)
     console.log(randomIndex)
     setSelected(randomIndex)
-}
+  }
+
+  const voted = () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    console.log("copy",copy)
+
+    setVotes(copy)
+    console.log(votes)
+  }
+
+ 
 
 
   return (
     <div>
       {anecdotes[selected]}
       <RandomiseButton text="Random Anecdote" function={randomAnecdote} />
+      <VoteBtn text="vote" function={voted} />
+      <VoteCounter selectedAnectode={votes[selected]}/>
     </div>
     
   )
