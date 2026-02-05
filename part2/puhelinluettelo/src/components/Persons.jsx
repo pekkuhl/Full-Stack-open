@@ -1,8 +1,11 @@
 
-const Persons = ({filteredPersons}) => {
+const Persons = ({person, onHandleClick}) => {
     return (
         <div>
-            {filteredPersons.map(person => <p key={person.name}> {person.name} {person.number} </p>)}
+            <li>
+                {person.name} {person.number}
+                <button onClick={onHandleClick} >Remove</button>
+                </li>
         </div>
     )
 }

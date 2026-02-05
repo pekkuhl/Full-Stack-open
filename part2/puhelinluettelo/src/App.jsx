@@ -3,6 +3,7 @@ import Filter from "./components/Filter.jsx"
 import Persons from "./components/Persons.jsx"
 import PersonForm from "./components/PersonForm.jsx"
 import axios from 'axios'
+import contactService from './services/contacs.js'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,11 +12,12 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState("")
 
-  const getPersons = () => {
-    axios.get('http://localhost:3001/persons')
-    .then(res=> setPersons(res.data))
-  }
 
+  const getPersons = () => {
+    contactService
+    .getAll()
+    .then(res => setPersons(res.data))
+  }
   useEffect(getPersons,[])
 
   const handleNameChange = (e) => {
@@ -39,17 +41,30 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    console.log(newNameToList)
+    
     if (persons.some(person => person.name === newNameToList.name)) {
       alert(`${newNameToList.name} is already in the phonebook!`)
     }
     else {
-      setPersons(persons.concat(newNameToList))
+      contactService
+      .create(newNameToList)
+      .then(res => setPersons(persons.concat(res.data))
+      )
       setNewName("")
+      setNewNumber("")
+      
     }
   }
   const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filterString.toLowerCase()))
   console.log(filteredPersons)
+
+  const removePerson = (id) => {
+      console.log(`removes this one ${id}`)
+      contactService
+      .removeContact(id)
+      .then(res => setPersons(persons.filter(person => person.id !== id)))
+
+  }
   
 
   return (
@@ -67,7 +82,15 @@ const App = () => {
       />
      
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons}/>
+      
+      <ul>
+        {filteredPersons.map(person => 
+          <Persons // props = {
+          key={person.id}
+          person={person}
+          onHandleClick={() => removePerson(person.id)}/>
+        )}
+      </ul>
     </div>
   )
 
