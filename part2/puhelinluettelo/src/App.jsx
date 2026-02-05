@@ -4,6 +4,7 @@ import Persons from "./components/Persons.jsx"
 import PersonForm from "./components/PersonForm.jsx"
 import axios from 'axios'
 import contactService from './services/contacs.js'
+import Notification from './components/Notification.jsx'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState("")
+  const [successMessage, setSuccessMessage] = useState(null)
 
 
   const getPersons = () => {
@@ -55,6 +57,9 @@ const App = () => {
         contactService
         .update(targetId, newPhoneNumber)
         .then(res => setPersons(persons.map(person => person.id !== targetId ? person : res.data)))
+        .then(setSuccessMessage(`Number of the person ${newPhoneNumber.name} was updated succesfully`), setTimeout(() => {
+          setSuccessMessage(null)
+        }, 2000))
         .catch(error => console.log('Something went wrong', error))
       }
     }
@@ -62,6 +67,11 @@ const App = () => {
       contactService
       .create(newNameToList)
       .then(res => setPersons(persons.concat(res.data)))
+      .then(
+        setSuccessMessage(`${newNameToList.name} was added succesfully`),
+        setTimeout(() => {
+          setSuccessMessage(null)
+            },2000))
       .catch(error => console.log("Something went wrong", error))
       setNewName("")
       setNewNumber("")
@@ -81,6 +91,9 @@ const App = () => {
       contactService
       .removeContact(id)
       .then(res => setPersons(persons.filter(person => person.id !== res.data.id)))
+      .then(setSuccessMessage(`${target.name} was removed succesfully`), setTimeout(() => {
+        setSuccessMessage(null)
+      }, 2000))
       .catch(error => console.log(`Something went wrong ${error}`))
       }
   }
@@ -91,6 +104,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage}/>
       <Filter onChange={handleFilter} />
 
       <h1>add a new</h1>
