@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import Filter from "./components/Filter.jsx"
 import Persons from "./components/Persons.jsx"
 import PersonForm from "./components/PersonForm.jsx"
-import axios from 'axios'
 import contactService from './services/contacs.js'
 import Notification from './components/Notification.jsx'
+import ErrorNotification from './components/ErrorNotification.jsx'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -13,13 +13,20 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState("")
   const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
 
   const getPersons = () => {
     contactService
     .getAll()
     .then(res => setPersons(res.data))
-    .catch(error => console.log('Something went wrong', error))
+    .catch(error => {
+      setErrorMessage("Error happened while trying to fetch Numbers")
+      setTimeout(() => {
+        setErrorMessage(null)
+      },2000)
+      console.log('Something went wrong', error)
+    })
   }
   useEffect(getPersons,[])
 
@@ -56,23 +63,35 @@ const App = () => {
 
         contactService
         .update(targetId, newPhoneNumber)
-        .then(res => setPersons(persons.map(person => person.id !== targetId ? person : res.data)))
-        .then(setSuccessMessage(`Number of the person ${newPhoneNumber.name} was updated succesfully`), setTimeout(() => {
+        .then(res => {
+          setPersons(persons.map(person => person.id !== targetId ? person : res.data))
+          setSuccessMessage(`Number of the person ${newPhoneNumber.name} was updated succesfully`)
+          setTimeout(() => {
           setSuccessMessage(null)
-        }, 2000))
-        .catch(error => console.log('Something went wrong', error))
+        }, 2000)})
+        .catch(error => {
+          console.log('Something went wrong', error)
+          setErrorMessage("Error happened while trying to update the number")
+        })
       }
     }
     else {
       contactService
       .create(newNameToList)
-      .then(res => setPersons(persons.concat(res.data)))
-      .then(
-        setSuccessMessage(`${newNameToList.name} was added succesfully`),
+      .then(res => {
+        setPersons(persons.concat(res.data))
+        setSuccessMessage(`${newNameToList.name} was added succesfully`)
         setTimeout(() => {
           setSuccessMessage(null)
-            },2000))
-      .catch(error => console.log("Something went wrong", error))
+            },2000)})
+      .catch(error => {
+        console.log("Something went wrong", error)
+        setErrorMessage("Error happened while adding a new contact")
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 2000)
+        
+      })
       setNewName("")
       setNewNumber("")
       
@@ -90,11 +109,19 @@ const App = () => {
       if (confirm(`are you sure you want to remove ${target.name}`)) {
       contactService
       .removeContact(id)
-      .then(res => setPersons(persons.filter(person => person.id !== res.data.id)))
-      .then(setSuccessMessage(`${target.name} was removed succesfully`), setTimeout(() => {
+      .then(res => {
+        setPersons(persons.filter(person => person.id !== id))
+        setSuccessMessage(`${target.name} was removed succesfully`)
+        setTimeout(() => {
         setSuccessMessage(null)
-      }, 2000))
-      .catch(error => console.log(`Something went wrong ${error}`))
+      }, 2000)})
+      .catch(error =>{
+        console.log(`Something went wrong ${error}`)
+        setErrorMessage("Error happened while trying to delete a contact")
+        setTimeout(() => {
+          setErrorMessage(null)
+        },2000)
+      } )
       }
   }
 
@@ -105,6 +132,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={successMessage}/>
+      <ErrorNotification message={errorMessage} />
       <Filter onChange={handleFilter} />
 
       <h1>add a new</h1>
