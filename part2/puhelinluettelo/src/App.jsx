@@ -17,6 +17,7 @@ const App = () => {
     contactService
     .getAll()
     .then(res => setPersons(res.data))
+    .catch(error => console.log('Something went wrong', error))
   }
   useEffect(getPersons,[])
 
@@ -43,13 +44,25 @@ const App = () => {
     }
     
     if (persons.some(person => person.name === newNameToList.name)) {
-      alert(`${newNameToList.name} is already in the phonebook!`)
+      if (confirm(`${newNameToList.name} is already in the phonebook, replace old number with a new one?`)) {
+        const newPhoneNumber = {
+          name: newName,
+          number: newNumber
+        }
+        const target = persons.find(person => person.name === newName)
+        const targetId = target.id
+
+        contactService
+        .update(targetId, newPhoneNumber)
+        .then(res => setPersons(persons.map(person => person.id !== targetId ? person : res.data)))
+        .catch(error => console.log('Something went wrong', error))
+      }
     }
     else {
       contactService
       .create(newNameToList)
-      .then(res => setPersons(persons.concat(res.data))
-      )
+      .then(res => setPersons(persons.concat(res.data)))
+      .catch(error => console.log("Something went wrong", error))
       setNewName("")
       setNewNumber("")
       
@@ -68,10 +81,11 @@ const App = () => {
       contactService
       .removeContact(id)
       .then(res => setPersons(persons.filter(person => person.id !== res.data.id)))
+      .catch(error => console.log(`Something went wrong ${error}`))
       }
-
-
   }
+
+
   
 
   return (
