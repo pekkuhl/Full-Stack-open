@@ -60,9 +60,16 @@ const App = () => {
 
   const removePerson = (id) => {
       console.log(`removes this one ${id}`)
+      const target = persons.find(person => 
+        person.id === id)
+        console.log(target)
+      
+      if (confirm(`are you sure you want to remove ${target.name}`)) {
       contactService
       .removeContact(id)
-      .then(res => setPersons(persons.filter(person => person.id !== id)))
+      .then(res => setPersons(persons.filter(person => person.id !== res.data.id)))
+      }
+
 
   }
   
