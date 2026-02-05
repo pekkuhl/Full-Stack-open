@@ -1,0 +1,18 @@
+const PersonForm = (props) => {
+    return (
+         <form onSubmit={props.onSubmit}>
+        
+        <div>
+          
+          <div>name: <input value={props.newName} onChange={props.onHandleNameChange}/></div>
+          <div>number: <input value={props.newNumber} onChange={props.onHandleNumberChange}/></div>
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+    )
+}
+
+
+export default PersonForm
