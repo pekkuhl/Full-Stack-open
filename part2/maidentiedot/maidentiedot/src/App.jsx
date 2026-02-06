@@ -9,6 +9,7 @@ function App() {
   const [countries, setCountries] = useState([])
   const [selectedCountries, setSelectedCountries] = useState([])
   const [currentCountry, setCurrentCountry] = useState("")
+  const [showBtnCountry, setShowBtnCountry] = useState(null)
  
 
    const allCountries = () => {
@@ -30,14 +31,14 @@ function App() {
 
   selectedCountries.forEach(country => console.log(country.name.common))
 
-  const handleShowBtn = (e) => {
-
-  }
+ 
 
   return (
     <div>
       <SearchBar onInputChange={handleInputChange} />
-      <CountryInfo selectedCountries={selectedCountries}/>
+      <CountryInfo selectedCountries={selectedCountries}
+      showBtnCountry={showBtnCountry}
+      setShowBtnCountry={setShowBtnCountry}/>
     </div>
   )
 }
