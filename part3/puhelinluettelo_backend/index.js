@@ -16,8 +16,32 @@ const persons = [
     },
 ]
 
+app.get('/info', (req, res) => {
+    const infoCount = persons.length
+    const dateNow = new Date()
+
+    res.send(
+        `<div>
+            <p> Phonebook has info for ${infoCount} people </p>
+            <p> ${dateNow} </p>
+        </div>`
+    )
+})
+
 app.get('/api/persons', (req, res) => {
     res.json(persons)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+    const id = req.params.id
+    const person = persons.find(person => person.id === id)
+
+    if (person) {
+        res.json(person)
+    }
+    else {
+        res.status(404).end()
+    }
 })
 
 const PORT = 3001
