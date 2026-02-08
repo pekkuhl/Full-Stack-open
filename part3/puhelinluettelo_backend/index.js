@@ -1,5 +1,9 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
+app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
     {
@@ -49,6 +53,31 @@ app.delete('/api/persons/:id', (req, res) => {
     persons = persons.filter(note => note.id !== id)
 
     res.status(204).end()
+})
+
+app.post('/api/persons/', (req, res) => {
+    const body = req.body
+    const randomId = Math.floor(Math.random() * 64000)
+
+    if (persons.find(person => person.name === body.name))
+        return res.status(400).json({
+            error: 'name already exists'
+        })
+
+    if (!body.name || !body.number) {
+        return res.status(400).json({
+            error: 'name or phone number missing'
+        })
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: String(randomId)
+    }
+
+    persons.concat(person)
+    res.json(person)
 })
 
 const PORT = 3001
