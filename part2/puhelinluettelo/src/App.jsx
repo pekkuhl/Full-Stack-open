@@ -6,6 +6,8 @@ import contactService from './services/contacs.js'
 import Notification from './components/Notification.jsx'
 import ErrorNotification from './components/ErrorNotification.jsx'
 
+
+
 const App = () => {
   const [persons, setPersons] = useState([])
 
@@ -72,6 +74,9 @@ const App = () => {
         .catch(error => {
           console.log('Something went wrong', error)
           setErrorMessage("Error happened while trying to update the number")
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 2000)
         })
       }
     }
