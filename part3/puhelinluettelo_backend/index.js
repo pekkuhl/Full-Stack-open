@@ -55,12 +55,8 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons/', (req, res) => {
     const body = req.body
-    const randomId = Math.floor(Math.random() * 64000)
+    console.log("-> ", body)
 
-    if (persons.find(person => person.name === body.name))
-        return res.status(400).json({
-            error: 'name already exists'
-        })
 
     if (!body.name || !body.number) {
         return res.status(400).json({
@@ -68,14 +64,14 @@ app.post('/api/persons/', (req, res) => {
         })
     }
 
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: String(randomId)
-    }
+    })
 
-    persons = persons.concat(person)
-    res.json(person)
+    person.save().then(savedPerson => {
+        res.json(savedPerson)
+    })
 })
 
 const PORT = process.env.PORT || 3001
