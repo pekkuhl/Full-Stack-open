@@ -83,7 +83,7 @@ app.post('/api/persons/', (req, res) => {
         id: String(randomId)
     }
 
-    persons.concat(person)
+    persons = persons.concat(person)
     res.json(person)
 })
 
