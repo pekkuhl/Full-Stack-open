@@ -2,3 +2,6 @@
 
 Linkki Renderiin vietyyn backendiin:
 https://puhelinluettelo-5yym.onrender.com/api/persons
+
+Koko sovellukseen:
+https://puhelinluettelo-5yym.onrender.com/
