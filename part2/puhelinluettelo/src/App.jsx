@@ -90,8 +90,8 @@ const App = () => {
           setSuccessMessage(null)
             },2000)})
       .catch(error => {
-        console.log("Something went wrong", error)
-        setErrorMessage("Error happened while adding a new contact")
+        console.log("Failed to add new person", error.response.data)
+        setErrorMessage(error.response.data.error)
         setTimeout(() => {
           setErrorMessage(null)
         }, 2000)
@@ -103,7 +103,6 @@ const App = () => {
     }
   }
   const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filterString.toLowerCase()))
-  console.log(filteredPersons)
 
   const removePerson = (id) => {
       console.log(`removes this one ${id}`)
