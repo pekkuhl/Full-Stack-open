@@ -8,7 +8,6 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("")
   const [countries, setCountries] = useState([])
   const [selectedCountries, setSelectedCountries] = useState([])
-  const [currentCountry, setCurrentCountry] = useState("")
   const [showBtnCountry, setShowBtnCountry] = useState(null)
  
 
@@ -24,7 +23,7 @@ function App() {
     setSearchTerm(e.target.value)
     console.log(e.target.value)
 
-    setSelectedCountries(countries.filter(country => country.name.common.toLowerCase().includes(e.target.value.toLocaleLowerCase())))
+    setSelectedCountries(countries.filter(country => country.name.common.toLowerCase().includes(searchTerm.toLocaleLowerCase())))
   }
 
   console.log(selectedCountries)
