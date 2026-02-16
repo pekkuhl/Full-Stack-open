@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -9,7 +9,10 @@ const Blog = require('../models/blog')
 const { title } = require('node:process')
 
 
-beforeEach(async () => {
+
+
+describe('blog tests for get, post, delete and put', () => {
+  beforeEach(async () => {
   await Blog.deleteMany({})
 
   let blogObject = new Blog(helper.initialBlogs[0])
@@ -63,6 +66,7 @@ test('blogs can be added with POST and the amount increase', async () => {
     assert.strictEqual(blogsAfterPost.length, helper.initialBlogs.length + 1)
 })
 
+//test että jos likes ei ole annettu palauttaa sen nollana (default)
 test('blog likes undefined gives it value 0', async () => {
 
   const newBlog = {
@@ -82,7 +86,7 @@ test('blog likes undefined gives it value 0', async () => {
     assert.strictEqual(addedBlog.likes, 0)
 })
 
-
+//jos blogilla ei ole titleä tai url se on bad request(400)
 test('if new blog doesnt contain title or url its a bad request', async () => {
 
   const newBlogNoTitle = {
@@ -107,9 +111,38 @@ test('if new blog doesnt contain title or url its a bad request', async () => {
     .send(newBlogNoUrl)
     .expect(400)
 
-  assert.strictEqual(responseNoUrl.status, 400)
+  assert.deepStrictEqual(responseNoUrl.status, 400)
+})
+
+//testi että yksittäisen blogin voi hakea id avulla onnistuneesti
+test('returning a specific blog with its id works succesfully', async () => {
+  const allBlogs = await helper.blogsinDb()
+  const oneBlog = allBlogs[0]
+
+  const resultBlog = await api
+    .get(`/api/blogs/${oneBlog.id}`)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  
+  assert.deepEqual(resultBlog.body, oneBlog)
+})
+
+//testi lukumäärän päivityksen onnistumisesta
+test('updating likes with put returns json with updated likes', async () => {
+  const allBlogs = await helper.blogsinDb()
+  const blogsForUpdate = allBlogs[0]
+
+  const updatedBlog = await api
+    .put(`/api/blogs/${blogsForUpdate.id}`)
+    .send({likes: blogsForUpdate.likes + 1})
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  assert(updatedBlog.body.likes, blogsForUpdate.likes + 1)
 })
 
 after(async() => {
   await mongoose.connection.close()
+})
+
 })

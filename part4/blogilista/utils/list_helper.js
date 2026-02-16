@@ -54,8 +54,6 @@ const mostBlogs = (blogs) => {
         mostBlogs = author.blogs
       }
     })
-      console.log("-->",authorWithMostBlogs)
-      console.log("===>",mostBlogs)
       return {
         author: authorWithMostBlogs,
         blogs: mostBlogs
@@ -86,8 +84,6 @@ const mostLikes = (blogs) => {
         mostLikes = author.likes
       }
     })
-      console.log("-->",authorWithMostLikes)
-      console.log("===>",mostLikes)
       return {
         author: authorWithMostLikes,
         likes: mostLikes
