@@ -24,6 +24,7 @@ const favoriteBlog = (blogs) => {
       else {
         maxLikes = maxLikes
         favBlog = favBlog
+        
       }
     })
     return favBlog
