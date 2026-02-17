@@ -24,7 +24,7 @@ describe('blog tests for get, post, delete and put', () => {
 
 
 //testi http get pyynnölle, oikea määrä json muotoisia blogeja
-test('correct amount of notes are returned as json', async () => {
+test('correct amount of blogs are returned as json', async () => {
   const response = await api
     .get('/api/blogs')
     .expect(200)
@@ -55,6 +55,7 @@ test('blogs can be added with POST and the amount increase', async () => {
     url: 'testUrl',
     likes: 12345
   }
+
 
   await api
     .post('/api/blogs')
