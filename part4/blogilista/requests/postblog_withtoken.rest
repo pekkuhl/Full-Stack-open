@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtpcnNpODgiLCJpZCI6IjY5OTQ0ZWMyYjViMzg0ZTIwZTA5YjQ2NiIsImlhdCI6MTc3MTMyNzcxMX0.3oNge_hU3VYwXYpijNLfn_LXn24IJylH75maYotFaxA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hdHRpOTUiLCJpZCI6IjY5OTQ2ZTM3Mzk2YjVjMWUwNDUxOGU5ZiIsImlhdCI6MTc3MTMzNTMyNn0.m8r_IMdoKNhD4gvpNaSs2LjNUr5EDWqsTGKZVhsCpZI
 
 {
-    "title" : "Kirsin viikonloppu",
-    "author" : "Kirsi Huttunen",
-    "url": "http://kirsinblog.com/kirsinviikonloppu",
+    "title" : "Matin musablogi",
+    "author" : "Matti Mäkinen",
+    "url": "http://mattimakinen.com/musablogi",
     "likes": 2342344
 }
