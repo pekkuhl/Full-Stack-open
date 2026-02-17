@@ -12,7 +12,15 @@ const User = require('../models/user')
 describe('tests for creating user', () => {
 
   beforeEach(async () => {
-    User.deleteMany({})
+    await User.deleteMany({})
+
+    const testUser = new User({
+      username: 'testUser',
+      name: 'test',
+      passwordHash: 'testHash'
+    })
+
+    await testUser.save()
 
   })
 
@@ -33,7 +41,7 @@ describe('tests for creating user', () => {
     console.log(response.body.error)
 
     assert.strictEqual(response.body.error, 'username has to be atleast 3 characters long')
-    assert.strictEqual(usersAtEnd.length, 0)
+    assert.strictEqual(usersAtEnd.length, 1)
   })
 
   test('user with password less than 3 characters is not created', async () => {
@@ -52,7 +60,7 @@ describe('tests for creating user', () => {
     const usersAtEnd = await User.find({})
 
     assert.strictEqual(response.body.error, 'password has to be atleast 3 characters long')
-    assert.strictEqual(usersAtEnd.length, 0)
+    assert.strictEqual(usersAtEnd.length, 1)
   })
 
   test('user with empty username is not created', async () => {
@@ -69,10 +77,10 @@ describe('tests for creating user', () => {
     const usersAtEnd = await User.find({})
 
     assert.strictEqual(response.body.error, 'Cannot create user without an username')
-    assert.strictEqual(usersAtEnd.length, 0)
+    assert.strictEqual(usersAtEnd.length, 1)
   })
 
-    test('user with emmpty password is not created', async () => {
+  test('user with empty password is not created', async () => {
 
     const newUser = {
       username: "pekku",
@@ -89,7 +97,25 @@ describe('tests for creating user', () => {
 
 
     assert.strictEqual(response.body.error, 'Cannot create user without a password')
-    assert.strictEqual(usersAtEnd.length, 0)
+    assert.strictEqual(usersAtEnd.length, 1)
+  })
+
+  test('user with duplicate username is not created', async () => {
+    const newUser = {
+      username: "testUser",
+      name: "testName",
+      password: "testpassword"
+    }
+
+    const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+
+    const usersAtEnd = await User.find({})
+
+    assert.strictEqual(response.body.error, 'username needs to be unique')
+    assert.strictEqual(usersAtEnd.length, 1)
   })
 
 
