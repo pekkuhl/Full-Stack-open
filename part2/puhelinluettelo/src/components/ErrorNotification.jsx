@@ -1,8 +1,4 @@
 const ErrorNotification = ({message}) => {
-    if (message === null) {
-        return null
-    }
-
     const messageStyle = {
         color: 'red',
         background: 'lightgrey',
@@ -11,6 +7,9 @@ const ErrorNotification = ({message}) => {
         borderRadius: '5px',
         padding: '10px',
         marginBottom: '10px',
+    }
+    if (message === null) {
+        return null
     }
 
     return (

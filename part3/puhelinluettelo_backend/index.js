@@ -28,9 +28,9 @@ app.get('/info', (req, res) => {
 
       res.send(
         `<div>
-                    <p> Phonebook has info for ${infoCount} people </p>
-                    <p> ${dateNow} </p>
-                </div>`
+            <p> Phonebook has info for ${infoCount} people </p>
+            <p> ${dateNow} </p>
+        </div>`
       )
     })
 })
