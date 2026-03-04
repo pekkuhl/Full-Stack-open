@@ -1,6 +1,8 @@
-import { useState } from "react"
+import { useState } from 'react'
 
-const Blog = ({ blog, updateBlogLike, removeBlog }) => {
+const Blog = ({ blog, updateBlogLike, removeBlog, user }) => {
+  console.log(blog)
+  console.log(user)
 
   const blogStyle = {
     paddingTop: 10,
@@ -24,19 +26,21 @@ const Blog = ({ blog, updateBlogLike, removeBlog }) => {
   }
 
   return (
-  <>
-  <div style={{...hide, ...blogStyle}}>
-    {blog.title} {blog.author}
-    <button type="button" onClick={toggleVisibility}>view</button>
-  </div>
-  <div style={{...show, ...blogStyle}}>
-    {blog.title}<button type="button" onClick={toggleVisibility}>hide</button>{<br/>}
-    {blog.url}{<br/>}
+    <>
+      <div style={{ ...hide, ...blogStyle }}>
+        {blog.title} {blog.author}
+        <button type="button" onClick={toggleVisibility}>view</button>
+      </div>
+      <div style={{ ...show, ...blogStyle }}>
+        {blog.title}<button type="button" onClick={toggleVisibility}>hide</button>{<br/>}
+        {blog.url}{<br/>}
     likes {blog.likes}<button type="button" onClick={() => updateBlogLike(blog.id)}>like</button>{<br/>}
-    {blog.author}{<br/>}
-    <button type="button" style={buttonStyle} onClick={() => removeBlog(blog.id)}>remove</button>
-  </div>
-  </>
-)}
+        {blog.author}{<br/>}
+        {blog.user.username === user.username && (
+          <button type="button" style={buttonStyle} onClick={() => removeBlog(blog.id)}>remove</button>
+        )}
+      </div>
+    </>
+  )}
 
 export default Blog

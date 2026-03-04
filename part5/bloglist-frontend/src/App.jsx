@@ -35,7 +35,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({ username, password })
       blogService.setToken(user.token)
@@ -43,13 +43,13 @@ const App = () => {
         'loggedUser', JSON.stringify(user)
       )
 
-      
+
       setUser(user)
       setUsername('')
       setPassword('')
     }
     catch (error) {
-      setErrorMessage("Wrong username or password")
+      setErrorMessage('Wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
       }, 3000)
@@ -84,12 +84,12 @@ const App = () => {
   const updateBlogLike = async(id) => {
     try {
       const selectedBlog = blogs.find(blog => blog.id === id)
-      const updatedBlog = {...selectedBlog, likes: selectedBlog.likes + 1}
+      const updatedBlog = { ...selectedBlog, likes: selectedBlog.likes + 1 }
       const response = await blogService.update(updatedBlog)
       const updatedBlogList = blogs.map(blog => {
-       return blog.id === response.id
-        ? response
-        : blog
+        return blog.id === response.id
+          ? response
+          : blog
       })
       setBlogs(updatedBlogList)
     }
@@ -103,64 +103,60 @@ const App = () => {
   }
 
   const removeBlog = async(id) => {
-    const confirmation = window.confirm("Do you really want to remove this blog")
+    const confirmation = window.confirm('Do you really want to remove this blog')
     if (confirmation) {
       try {
         await blogService.remove(id)
         const newBlogList = blogs.filter(blog => blog.id !== id)
         setBlogs(newBlogList)
-        setMessage(`blog deleted succesfully`)
+        setMessage('blog deleted succesfully')
         setTimeout(() => {
           setMessage(null)
         },3000)
-    }
-    catch (error) {
-      setErrorMessage(`Failed to delete the blog`)
-      setTimeout(() => {
-        setMessage(null)
-      },3000)
-      console.log(error)
-    }
+      }
+      catch (error) {
+        setErrorMessage('Failed to delete the blog')
+        setTimeout(() => {
+          setMessage(null)
+        },3000)
+        console.log(error)
+      }
 
     }
 
-  } 
+  }
 
 
   const createBlogFormRef = useRef()
 
-
-  
- 
-
   return (
     <div>
       {!user && (
-      <LoginForm
-      handleLogin={handleLogin}
-      username={username}
-      setUsername={setUsername}
-      password={password}
-      setPassword={setPassword}
-      errorMessage={errorMessage}
-      />)}
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+          errorMessage={errorMessage}
+        />)}
 
       {user && (
-      <div>
-        <Blogs
-        removeBlog={removeBlog}
-        updateBlogLike={updateBlogLike}
-        blogs={blogs}
-        user={user}
-        handleLogout={handleLogout}
-        errorMessage={errorMessage}
-        message={message}
-        />
-      <Togglable btnLabel={"create new blog"} cancelBtnLabel={'cancel'} ref={createBlogFormRef}>
-        <CreateBlogsForm
-        createNewBlog={createNewBlog}/>
-      </Togglable>
-      </div>
+        <div>
+          <Blogs
+            removeBlog={removeBlog}
+            updateBlogLike={updateBlogLike}
+            blogs={blogs}
+            user={user}
+            handleLogout={handleLogout}
+            errorMessage={errorMessage}
+            message={message}
+          />
+          <Togglable btnLabel={'create new blog'} cancelBtnLabel={'cancel'} ref={createBlogFormRef}>
+            <CreateBlogsForm
+              createNewBlog={createNewBlog}/>
+          </Togglable>
+        </div>
       )}
     </div>
   )

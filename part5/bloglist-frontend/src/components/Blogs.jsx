@@ -1,19 +1,18 @@
-import Blog from "./Blog"
-import Notification from "./Notification"
-import ErrorNotification from "./ErrorNotification"
-import Togglable from "./Togglable"
+import Blog from './Blog'
+import Notification from './Notification'
+import ErrorNotification from './ErrorNotification'
 
-const Blogs = ({blogs, user, handleLogout, errorMessage, message, updateBlogLike, removeBlog}) => {
+const Blogs = ({ blogs, user, handleLogout, errorMessage, message, updateBlogLike, removeBlog }) => {
   return <div>
-  <h2>blogs</h2>
-  <Notification message={message}/>
-  <ErrorNotification errorMessage={errorMessage} />
-  <form>
-  <p>logged in as {user && user.name } <button type="submit"  onClick={handleLogout} >logout</button></p>
-  {blogs.map(blog =>
-    <Blog key={blog.id} blog={blog} updateBlogLike={updateBlogLike} removeBlog={removeBlog} />
-  )}
-  </form>
+    <h2>blogs</h2>
+    <Notification message={message}/>
+    <ErrorNotification errorMessage={errorMessage} />
+    <form>
+      <p>logged in as {user && user.name } <button type="submit"  onClick={handleLogout} >logout</button></p>
+      {blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} updateBlogLike={updateBlogLike} removeBlog={removeBlog} user={user}/>
+      )}
+    </form>
   </div>
 }
 
