@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm'
 import Blogs from './components/Blogs'
 import loginService from './services/login'
 import CreateBlogsForm from './components/CreateBlogsForm'
+import Togglable from './components/Togglable'
 
 
 const App = () => {
@@ -13,8 +14,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [message, setMessage] = useState(null)
-
-
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -77,9 +76,7 @@ const App = () => {
       },3000)
       console.log(error)
     }
-    
   }
-
 
 
   
@@ -99,16 +96,17 @@ const App = () => {
 
       {user && (
       <div>
-      <Blogs
-      blogs={blogs}
-      user={user}
-      handleLogout={handleLogout}
-      errorMessage={errorMessage}
-      message={message}
-      />
-
-      <CreateBlogsForm
-      createNewBlog={createNewBlog}/>
+        <Blogs
+        blogs={blogs}
+        user={user}
+        handleLogout={handleLogout}
+        errorMessage={errorMessage}
+        message={message}
+        />
+      <Togglable btnLabel={"create new blog"}>
+        <CreateBlogsForm
+        createNewBlog={createNewBlog}/>
+      </Togglable>
       </div>
       )}
     </div>
