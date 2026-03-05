@@ -16,12 +16,12 @@ const CreateBlogsForm = ({ createNewBlog }) => {
         setUrl('')
       }}>
         <div>
-          <label> title:
+          <label>title:
             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
           </label>
         </div>
         <div>
-          <label> author:
+          <label>author:
             <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} />
           </label>
         </div>
