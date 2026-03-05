@@ -44,4 +44,77 @@ describe('Blog app', () => {
       await expect(page.getByText('login')).toBeVisible()
     })
   })
+
+  describe('When logged in', () => {
+  beforeEach(async ({ page }) => {
+    await page.getByLabel('username').fill('testiukko')
+    await page.getByLabel('password').fill('salainen')
+    await page.getByText('login').click()
+  })
+
+  test('a new blog can be created', async ({ page }) => {
+    
+    await page.getByRole('button', { name: 'create new blog' }).click()
+    await page.getByLabel('title:').fill('testTitle')
+    await page.getByLabel('author:').fill('testAuthor')
+    await page.getByLabel('url:').fill('testUrl')
+    await page.getByRole('button', { name: 'create' }).click()
+
+    await expect(page.getByText('testTitle testAuthorview')).toBeVisible()
+  })
+
+  test('a new blog can be liked', async ({ page }) => {
+    await page.getByRole('button', { name: 'create new blog' }).click()
+    await page.getByLabel('title:').fill('testTitle')
+    await page.getByLabel('author:').fill('testAuthor')
+    await page.getByLabel('url:').fill('testUrl')
+    await page.getByRole('button', { name: 'create' }).click()
+    
+    await page.getByRole('button', { name: 'view' }).click()
+    await page.getByRole('button', { name: 'like' }).click()
+
+
+    await expect(page.getByText('likes 1')).toBeVisible()
+  })
+
+  test('a blog can be deleted by the user who made it', async ({ page }) => {
+    await page.getByRole('button', { name: 'create new blog' }).click()
+    await page.getByLabel('title:').fill('removableTitle')
+    await page.getByLabel('author:').fill('removableAuthor')
+    await page.getByLabel('url:').fill('removableUrl')
+    await page.getByRole('button', { name: 'create' }).click()
+
+    await page.getByRole('button', { name: 'view' }).click()
+
+    await page.getByText('remove').click()
+
+    page.on('dialog', dialog => dialog.accept())
+
+    await expect(page.getByLabel('title:')).not.toBeVisible()
+  })
+
+  test('user who hasnt made the blog cant see remove button', async ({ page, request }) => {
+    await page.getByRole('button', { name: 'create new blog' }).click()
+    await page.getByLabel('title:').fill('removableTitle')
+    await page.getByLabel('author:').fill('removableAuthor')
+    await page.getByLabel('url:').fill('removableUrl')
+    await page.getByRole('button', { name: 'create' }).click()
+    await page.getByRole('button', { name: 'logout' }).click()
+
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'anotherUser',
+        username: 'another',
+        password: 'secret'
+      }
+    })
+    await page.getByLabel('username').fill('another')
+    await page.getByLabel('password').fill('secret')
+    await page.getByText('login').click()
+    await page.getByRole('button', { name: 'view' }).click()
+    await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+  })
+
+
+})
 })
