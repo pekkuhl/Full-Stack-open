@@ -21,7 +21,7 @@ const App = () => {
       setBlogs( sortedBlogs )
     })
 
-  }, [])
+  }, [user])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -87,6 +87,7 @@ const App = () => {
       const updatedBlog = { ...selectedBlog, likes: selectedBlog.likes + 1 }
       const response = await blogService.update(updatedBlog)
       const updatedBlogList = blogs.map(blog => {
+        console.log('tässä on vielä user kaikki tiedot...?', response)
         return blog.id === response.id
           ? response
           : blog
