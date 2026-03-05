@@ -18,28 +18,39 @@ const Blog = ({ blog, updateBlogLike, removeBlog, user }) => {
 
   const [informationVisible, setInformationVisible] = useState(false)
 
-  const hide = { display: informationVisible ? 'none' : '' }
-  const show = { display: informationVisible ? '' : 'none' }
-
   const toggleVisibility = () => {
     setInformationVisible(!informationVisible)
   }
 
   return (
     <>
-      <div style={{ ...hide, ...blogStyle }}>
-        {blog.title} {blog.author}
-        <button type="button" onClick={toggleVisibility}>view</button>
-      </div>
-      <div style={{ ...show, ...blogStyle }}>
-        {blog.title}<button type="button" onClick={toggleVisibility}>hide</button>{<br/>}
-        {blog.url}{<br/>}
-    likes {blog.likes}<button type="button" onClick={() => updateBlogLike(blog.id)}>like</button>{<br/>}
-        {blog.author}{<br/>}
-        {blog.user.username === user.username && (
-          <button type="button" style={buttonStyle} onClick={() => removeBlog(blog.id)}>remove</button>
-        )}
-      </div>
+      {!informationVisible && (
+        <div style={ blogStyle }>
+          {blog.title} {blog.author}
+          <button type="button" onClick={toggleVisibility}>view</button>
+        </div>
+      )}
+      {informationVisible && (
+        <div style={ blogStyle }>
+          <div>
+            {blog.title}<button type="button" onClick={toggleVisibility}>hide</button>
+          </div>
+          <div>
+            {blog.url}
+          </div>
+          <div>
+            likes {blog.likes}<button type="button" onClick={() => updateBlogLike(blog.id)}>like</button>
+          </div>
+          <div>
+            {blog.author}
+          </div>
+          <div>
+            {blog.user.username === user.username && (
+              <button type="button" style={buttonStyle} onClick={() => removeBlog(blog.id)}>remove</button>
+            )}
+          </div>
+        </div>
+      )}
     </>
   )}
 
