@@ -39,6 +39,11 @@
       "id": "3d1d",
       "content": "Anekdootti",
       "votes": 0
+    },
+    {
+      "id": "b31f",
+      "content": "lolol",
+      "votes": 0
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
