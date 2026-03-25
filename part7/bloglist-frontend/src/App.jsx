@@ -1,20 +1,23 @@
 import { useState, useEffect, useRef } from 'react'
+import { useReducer } from 'react'
+import { notificationReducer } from './reducers/notificationReducer'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import Blogs from './components/Blogs'
 import loginService from './services/login'
 import CreateBlogsForm from './components/CreateBlogsForm'
 import Togglable from './components/Togglable'
+import NotificationContext from './NotificationContext'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [message, setMessage] = useState(null)
-  const x = 'lol'
-  console.log(x)
+  const [notification, notificationDispatch] = useReducer(notificationReducer, {
+    message: '',
+    messageType: null,
+  })
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
@@ -44,9 +47,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (error) {
-      setErrorMessage('Wrong username or password')
+      notificationDispatch({ type: 'ERRORMESSAGE', payload: 'Login failed' })
       setTimeout(() => {
-        setErrorMessage(null)
+        notificationDispatch({ type: 'EMPTYMESSAGE' })
       }, 3000)
       console.log(error)
     }
@@ -62,14 +65,20 @@ const App = () => {
       const response = await blogService.create(newBlog)
       setBlogs(blogs.concat(response))
       createBlogFormRef.current.toggleVisibility()
-      setMessage(`added a new blog succesfully: ${title} by ${author}`)
+      notificationDispatch({
+        type: 'SUCCESSMESSAGE',
+        payload: `added a new blog succesfully: ${title} by ${author}`,
+      })
       setTimeout(() => {
-        setMessage(null)
+        notificationDispatch({ type: 'EMPTYMESSAGE' })
       }, 3000)
     } catch (error) {
-      setErrorMessage('Failed to add a new blog')
+      notificationDispatch({
+        type: 'ERRORMESSAGE',
+        payload: 'Failed to add a new blog',
+      })
       setTimeout(() => {
-        setErrorMessage(null)
+        notificationDispatch({ type: 'EMPTYMESSAGE' })
       }, 3000)
       console.log(error)
     }
@@ -84,14 +93,23 @@ const App = () => {
       }
       const response = await blogService.update(updatedBlog)
       const updatedBlogList = blogs.map((blog) => {
-        console.log('tässä on vielä user kaikki tiedot...?', response)
         return blog.id === response.id ? response : blog
       })
       setBlogs(updatedBlogList)
-    } catch (error) {
-      setErrorMessage('Failed to like the blog')
+      notificationDispatch({
+        type: 'SUCCESSMESSAGE',
+        payload: `You liked the blog: ${updatedBlog.title}`,
+      })
       setTimeout(() => {
-        setErrorMessage(null)
+        notificationDispatch({ type: 'EMPTYMESSAGE' })
+      }, 3000)
+    } catch (error) {
+      notificationDispatch({
+        type: 'ERRORMESSAGE',
+        payload: 'Failed to like the blog',
+      })
+      setTimeout(() => {
+        notificationDispatch({ type: 'EMPTYMESSAGE' })
       }, 3000)
       console.log(error)
     }
@@ -106,14 +124,23 @@ const App = () => {
         await blogService.remove(id)
         const newBlogList = blogs.filter((blog) => blog.id !== id)
         setBlogs(newBlogList)
-        setMessage('blog deleted succesfully')
+
+        console.log('Sending dispatch now...')
+        notificationDispatch({
+          type: 'SUCCESSMESSAGE',
+          payload: 'Blog deleted successfully',
+        })
+        console.log(notification.message)
         setTimeout(() => {
-          setMessage(null)
+          notificationDispatch({ type: 'EMPTYMESSAGE' })
         }, 3000)
       } catch (error) {
-        setErrorMessage('Failed to delete the blog')
+        notificationDispatch({
+          type: 'ERRORMESSAGE',
+          payload: 'Failed to delete the blog',
+        })
         setTimeout(() => {
-          setMessage(null)
+          notificationDispatch({ type: 'EMPTYMESSAGE' })
         }, 3000)
         console.log(error)
       }
@@ -123,39 +150,40 @@ const App = () => {
   const createBlogFormRef = useRef()
 
   return (
-    <div>
-      {!user && (
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          errorMessage={errorMessage}
-        />
-      )}
-
-      {user && (
-        <div>
-          <Blogs
-            removeBlog={removeBlog}
-            updateBlogLike={updateBlogLike}
-            blogs={blogs}
-            user={user}
-            handleLogout={handleLogout}
-            errorMessage={errorMessage}
-            message={message}
+    <NotificationContext.Provider
+      value={{ notification, notificationDispatch }}
+    >
+      <div>
+        {!user && (
+          <LoginForm
+            handleLogin={handleLogin}
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
           />
-          <Togglable
-            btnLabel={'create new blog'}
-            cancelBtnLabel={'cancel'}
-            ref={createBlogFormRef}
-          >
-            <CreateBlogsForm createNewBlog={createNewBlog} />
-          </Togglable>
-        </div>
-      )}
-    </div>
+        )}
+
+        {user && (
+          <div>
+            <Blogs
+              removeBlog={removeBlog}
+              updateBlogLike={updateBlogLike}
+              blogs={blogs}
+              user={user}
+              handleLogout={handleLogout}
+            />
+            <Togglable
+              btnLabel={'create new blog'}
+              cancelBtnLabel={'cancel'}
+              ref={createBlogFormRef}
+            >
+              <CreateBlogsForm createNewBlog={createNewBlog} />
+            </Togglable>
+          </div>
+        )}
+      </div>
+    </NotificationContext.Provider>
   )
 }
 

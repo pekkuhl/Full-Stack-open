@@ -1,6 +1,10 @@
-const Notification = ({ message }) => {
+import { useContext } from 'react'
+import NotificationContext from '../NotificationContext'
 
-  const messageStyle = {
+const Notification = () => {
+  const { notification } = useContext(NotificationContext)
+
+  const successMessageStyle = {
     color: 'green',
     background: 'lightgrey',
     fontSize: '20px',
@@ -10,15 +14,28 @@ const Notification = ({ message }) => {
     marginBottom: '10px',
   }
 
-  if (message === null) {
+  const errorMessageStyle = {
+    color: 'red',
+    background: 'lightgrey',
+    fontSize: '20px',
+    borderStyle: 'solid',
+    borderRadius: '5px',
+    padding: '10px',
+    marginBottom: '10px',
+  }
+
+  let notificationStyle = {}
+  if (notification.messageType === 'success') {
+    notificationStyle = successMessageStyle
+  } else if (notification.messageType === 'error') {
+    notificationStyle = errorMessageStyle
+  }
+
+  if (!notification.message) {
     return null
   }
 
-  return (
-    <div style={messageStyle}>
-      {message}
-    </div>
-  )
+  return <div style={notificationStyle}>{notification.message}</div>
 }
 
 export default Notification
