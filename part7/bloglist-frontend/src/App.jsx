@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useReducer } from 'react'
 import { notificationReducer } from './reducers/notificationReducer'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import Blogs from './components/Blogs'
@@ -10,7 +11,6 @@ import Togglable from './components/Togglable'
 import NotificationContext from './NotificationContext'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -19,12 +19,55 @@ const App = () => {
     messageType: null,
   })
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(sortedBlogs)
+  const createNotification = (type, payload = '') => {
+    notificationDispatch({
+      type: type,
+      payload: payload,
     })
-  }, [user])
+    setTimeout(() => {
+      notificationDispatch({ type: 'EMPTYMESSAGE' })
+    }, 3000)
+  }
+
+  const queryClient = useQueryClient()
+
+  const blogs = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+  })
+
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      createBlogFormRef.current.toggleVisibility()
+      createNotification('SUCCESSMESSAGE', 'added a new blog successfully')
+    },
+    onError: () => {
+      createNotification('ERRORMESSAGE', 'Failed to add a new blog')
+    },
+  })
+
+  const updateLikeMutation = useMutation({
+    mutationFn: blogService.update,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      createNotification('SUCCESSMESSAGE', 'You liked a blog')
+    },
+    onError: () => {
+      createNotification('ERRORMESSAGE', 'Failed to like the blog')
+    },
+  })
+
+  const removeBlogMutation = useMutation({
+    mutationFn: blogService.remove,
+    onSuccess: () => {
+      createNotification('SUCCESSMESSAGE', 'Blog removed succesfully')
+    },
+    onError: () => {
+      createNotification('ERRORMESSAGE', 'Failed to delete the blog')
+    },
+  })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -59,91 +102,26 @@ const App = () => {
     window.localStorage.clear()
   }
 
-  const createNewBlog = async (title, author, url) => {
-    try {
-      const newBlog = { title, author, url }
-      const response = await blogService.create(newBlog)
-      setBlogs(blogs.concat(response))
-      createBlogFormRef.current.toggleVisibility()
-      notificationDispatch({
-        type: 'SUCCESSMESSAGE',
-        payload: `added a new blog succesfully: ${title} by ${author}`,
-      })
-      setTimeout(() => {
-        notificationDispatch({ type: 'EMPTYMESSAGE' })
-      }, 3000)
-    } catch (error) {
-      notificationDispatch({
-        type: 'ERRORMESSAGE',
-        payload: 'Failed to add a new blog',
-      })
-      setTimeout(() => {
-        notificationDispatch({ type: 'EMPTYMESSAGE' })
-      }, 3000)
-      console.log(error)
-    }
+  const createNewBlog = (title, author, url) => {
+    const newBlog = { title, author, url }
+    newBlogMutation.mutate(newBlog)
   }
 
-  const updateBlogLike = async (id) => {
-    try {
-      const selectedBlog = blogs.find((blog) => blog.id === id)
-      const updatedBlog = {
-        ...selectedBlog,
-        likes: selectedBlog.likes + 1,
-      }
-      const response = await blogService.update(updatedBlog)
-      const updatedBlogList = blogs.map((blog) => {
-        return blog.id === response.id ? response : blog
-      })
-      setBlogs(updatedBlogList)
-      notificationDispatch({
-        type: 'SUCCESSMESSAGE',
-        payload: `You liked the blog: ${updatedBlog.title}`,
-      })
-      setTimeout(() => {
-        notificationDispatch({ type: 'EMPTYMESSAGE' })
-      }, 3000)
-    } catch (error) {
-      notificationDispatch({
-        type: 'ERRORMESSAGE',
-        payload: 'Failed to like the blog',
-      })
-      setTimeout(() => {
-        notificationDispatch({ type: 'EMPTYMESSAGE' })
-      }, 3000)
-      console.log(error)
+  const updateBlogLike = (id) => {
+    const selectedBlog = blogs.data.find((blog) => blog.id === id)
+    const updatedBlog = {
+      ...selectedBlog,
+      likes: selectedBlog.likes + 1,
     }
+    updateLikeMutation.mutate(updatedBlog)
   }
 
-  const removeBlog = async (id) => {
+  const removeBlog = (id) => {
     const confirmation = window.confirm(
       'Do you really want to remove this blog'
     )
     if (confirmation) {
-      try {
-        await blogService.remove(id)
-        const newBlogList = blogs.filter((blog) => blog.id !== id)
-        setBlogs(newBlogList)
-
-        console.log('Sending dispatch now...')
-        notificationDispatch({
-          type: 'SUCCESSMESSAGE',
-          payload: 'Blog deleted successfully',
-        })
-        console.log(notification.message)
-        setTimeout(() => {
-          notificationDispatch({ type: 'EMPTYMESSAGE' })
-        }, 3000)
-      } catch (error) {
-        notificationDispatch({
-          type: 'ERRORMESSAGE',
-          payload: 'Failed to delete the blog',
-        })
-        setTimeout(() => {
-          notificationDispatch({ type: 'EMPTYMESSAGE' })
-        }, 3000)
-        console.log(error)
-      }
+      removeBlogMutation.mutate(id)
     }
   }
 
