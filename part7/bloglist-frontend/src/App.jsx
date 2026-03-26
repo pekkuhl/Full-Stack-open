@@ -5,6 +5,7 @@ import { userReducer } from './reducers/userReducer'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
+import Users from './components/Users'
 import Blogs from './components/Blogs'
 import CreateBlogsForm from './components/CreateBlogsForm'
 import Togglable from './components/Togglable'
@@ -137,12 +138,19 @@ const App = () => {
                 blogs={blogs}
                 handleLogout={handleLogout}
               />
+
               <Togglable
                 btnLabel={'create new blog'}
                 cancelBtnLabel={'cancel'}
                 ref={createBlogFormRef}
               >
                 <CreateBlogsForm createNewBlog={createNewBlog} />
+              </Togglable>
+              <Togglable
+                btnLabel={'show all users'}
+                cancelBtnLabel={'hide users'}
+              >
+                <Users />
               </Togglable>
             </div>
           )}
