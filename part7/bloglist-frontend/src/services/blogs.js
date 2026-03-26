@@ -4,7 +4,6 @@ let token = null
 
 const setToken = (newToken) => {
   token = `Bearer ${newToken}`
-  console.log(token)
 }
 
 const getAll = () => {
@@ -13,7 +12,6 @@ const getAll = () => {
 }
 
 const create = async (newBlogObject) => {
-  console.log(token)
   const config = {
     headers: { Authorization: token }
   }
@@ -27,7 +25,7 @@ const update = async (updatedBlogObject) => {
   return response.data
 }
 
-const remove = async(id) => {
+const remove = async (id) => {
   const config = {
     headers: { Authorization: token }
   }

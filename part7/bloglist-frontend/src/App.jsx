@@ -1,19 +1,18 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useReducer } from 'react'
 import { notificationReducer } from './reducers/notificationReducer'
+import { userReducer } from './reducers/userReducer'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import Blogs from './components/Blogs'
-import loginService from './services/login'
 import CreateBlogsForm from './components/CreateBlogsForm'
 import Togglable from './components/Togglable'
 import NotificationContext from './NotificationContext'
+import UserContext from './UserContext'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const [user, userDispatch] = useReducer(userReducer, null)
   const [notification, notificationDispatch] = useReducer(notificationReducer, {
     message: '',
     messageType: null,
@@ -27,6 +26,19 @@ const App = () => {
     setTimeout(() => {
       notificationDispatch({ type: 'EMPTYMESSAGE' })
     }, 3000)
+  }
+
+  const login = (user) => {
+    userDispatch({
+      type: 'LOGIN',
+      payload: user,
+    })
+  }
+
+  const logout = () => {
+    userDispatch({
+      type: 'LOGOUT',
+    })
   }
 
   const queryClient = useQueryClient()
@@ -62,6 +74,7 @@ const App = () => {
   const removeBlogMutation = useMutation({
     mutationFn: blogService.remove,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
       createNotification('SUCCESSMESSAGE', 'Blog removed succesfully')
     },
     onError: () => {
@@ -73,33 +86,14 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      login(user)
       blogService.setToken(user.token)
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({ username, password })
-      blogService.setToken(user.token)
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (error) {
-      notificationDispatch({ type: 'ERRORMESSAGE', payload: 'Login failed' })
-      setTimeout(() => {
-        notificationDispatch({ type: 'EMPTYMESSAGE' })
-      }, 3000)
-      console.log(error)
-    }
-  }
-
   const handleLogout = () => {
     window.localStorage.clear()
+    logout()
   }
 
   const createNewBlog = (title, author, url) => {
@@ -128,40 +122,33 @@ const App = () => {
   const createBlogFormRef = useRef()
 
   return (
-    <NotificationContext.Provider
-      value={{ notification, notificationDispatch }}
-    >
-      <div>
-        {!user && (
-          <LoginForm
-            handleLogin={handleLogin}
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-          />
-        )}
+    <UserContext.Provider value={{ user, userDispatch, login }}>
+      <NotificationContext.Provider
+        value={{ notification, notificationDispatch, createNotification }}
+      >
+        <div>
+          {!user && <LoginForm />}
 
-        {user && (
-          <div>
-            <Blogs
-              removeBlog={removeBlog}
-              updateBlogLike={updateBlogLike}
-              blogs={blogs}
-              user={user}
-              handleLogout={handleLogout}
-            />
-            <Togglable
-              btnLabel={'create new blog'}
-              cancelBtnLabel={'cancel'}
-              ref={createBlogFormRef}
-            >
-              <CreateBlogsForm createNewBlog={createNewBlog} />
-            </Togglable>
-          </div>
-        )}
-      </div>
-    </NotificationContext.Provider>
+          {user && (
+            <div>
+              <Blogs
+                removeBlog={removeBlog}
+                updateBlogLike={updateBlogLike}
+                blogs={blogs}
+                handleLogout={handleLogout}
+              />
+              <Togglable
+                btnLabel={'create new blog'}
+                cancelBtnLabel={'cancel'}
+                ref={createBlogFormRef}
+              >
+                <CreateBlogsForm createNewBlog={createNewBlog} />
+              </Togglable>
+            </div>
+          )}
+        </div>
+      </NotificationContext.Provider>
+    </UserContext.Provider>
   )
 }
 

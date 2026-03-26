@@ -1,7 +1,11 @@
 import Blog from './Blog'
 import Notification from './Notification'
+import { useContext } from 'react'
+import UserContext from '../UserContext'
 
-const Blogs = ({ blogs, user, handleLogout, updateBlogLike, removeBlog }) => {
+const Blogs = ({ blogs, handleLogout, updateBlogLike, removeBlog }) => {
+  const { user } = useContext(UserContext)
+
   let sortedBlogs = []
   if (blogs.isSuccess) {
     sortedBlogs = blogs.data.map((data) => data)
@@ -14,7 +18,7 @@ const Blogs = ({ blogs, user, handleLogout, updateBlogLike, removeBlog }) => {
       <form>
         <p>
           logged in as {user && user.name}{' '}
-          <button type="submit" onClick={handleLogout}>
+          <button type="button" onClick={handleLogout}>
             logout
           </button>
         </p>
