@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 const CommentArea = ({ blog }) => {
   const [comment, setComment] = useState('')
   const queryClient = useQueryClient()
+  const id = blog.id
 
   const createCommentMutation = useMutation({
     mutationFn: blogService.createComment,
@@ -14,7 +15,7 @@ const CommentArea = ({ blog }) => {
   })
 
   const createComment = (comment) => {
-    createCommentMutation.mutate({ id: blog.id, comment })
+    createCommentMutation.mutate({ id, comment })
     setComment('')
   }
 
