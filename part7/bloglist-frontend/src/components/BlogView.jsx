@@ -26,7 +26,7 @@ const BlogView = ({ updateBlogLike }) => {
           <button onClick={() => updateBlogLike(blog.id)}>like</button>
         </p>
         <p>added by {blog.author}</p>
-        <CommentArea />
+        <CommentArea blog={blog} />
         <NavLink to={`/blogs`}>
           <button>back</button>
         </NavLink>
