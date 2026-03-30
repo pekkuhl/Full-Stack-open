@@ -14,6 +14,7 @@ import CreateBlogsForm from './components/CreateBlogsForm'
 import Notification from './components/Notification'
 import NotificationContext from './NotificationContext'
 import UserContext from './UserContext'
+import NavMenu from './components/NavMenu'
 
 const App = () => {
   const [user, userDispatch] = useReducer(userReducer, null)
@@ -67,7 +68,7 @@ const App = () => {
     mutationFn: blogService.update,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
-      createNotification('SUCCESSMESSAGE', 'you likes the blog successfully')
+      createNotification('SUCCESSMESSAGE', 'you liked the blog successfully')
     },
     onError: () => {
       createNotification('ERRORMESSAGE', 'Failed to like the blog')
@@ -132,6 +133,7 @@ const App = () => {
 
           {user && (
             <div>
+              <NavMenu handleLogout={handleLogout} />
               <Notification />
               <Routes>
                 <Route

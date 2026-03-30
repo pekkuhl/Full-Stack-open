@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import UserContext from '../UserContext'
 import { Link } from 'react-router'
 
-const Blogs = ({ blogs, handleLogout, updateBlogLike, removeBlog }) => {
+const Blogs = ({ blogs, updateBlogLike, removeBlog }) => {
   const { user } = useContext(UserContext)
 
   let sortedBlogs = []
@@ -16,18 +16,9 @@ const Blogs = ({ blogs, handleLogout, updateBlogLike, removeBlog }) => {
     <div>
       <h2>blogs</h2>
       <form>
-        <p>
-          logged in as {user && user.name}{' '}
-          <button type="button" onClick={handleLogout}>
-            logout
-          </button>
-        </p>
         <div>
           <Link to="/createBlog">
             <button>create new blog</button>
-          </Link>
-          <Link to="/users">
-            <button>Users</button>
           </Link>
         </div>
         {blogs.isLoading && <div> loading blogs </div>}

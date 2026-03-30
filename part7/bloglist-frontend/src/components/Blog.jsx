@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router'
 
-const Blog = ({ blog, updateBlogLike, removeBlog, user }) => {
+const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
