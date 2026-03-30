@@ -5,8 +5,10 @@ import UserContext from '../UserContext'
 import { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+import { useNavigate } from 'react-router'
 
 const LoginForm = () => {
+  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const { login } = useContext(UserContext)
@@ -23,6 +25,7 @@ const LoginForm = () => {
       login(user)
       setUsername('')
       setPassword('')
+      navigate('/blogs')
     } catch (error) {
       createNotification('ERRORMESSAGE', 'Login failed')
       console.log(error)

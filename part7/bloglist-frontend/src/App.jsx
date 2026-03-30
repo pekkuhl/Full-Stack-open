@@ -1,14 +1,17 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useReducer } from 'react'
 import { notificationReducer } from './reducers/notificationReducer'
 import { userReducer } from './reducers/userReducer'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Routes, Route, Link, NavLink } from 'react-router'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import Users from './components/Users'
+import User from './components/User'
 import Blogs from './components/Blogs'
+import BlogView from './components/BlogView'
 import CreateBlogsForm from './components/CreateBlogsForm'
-import Togglable from './components/Togglable'
+import Notification from './components/Notification'
 import NotificationContext from './NotificationContext'
 import UserContext from './UserContext'
 
@@ -53,7 +56,6 @@ const App = () => {
     mutationFn: blogService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
-      createBlogFormRef.current.toggleVisibility()
       createNotification('SUCCESSMESSAGE', 'added a new blog successfully')
     },
     onError: () => {
@@ -65,7 +67,7 @@ const App = () => {
     mutationFn: blogService.update,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
-      createNotification('SUCCESSMESSAGE', 'You liked a blog')
+      createNotification('SUCCESSMESSAGE', 'you likes the blog successfully')
     },
     onError: () => {
       createNotification('ERRORMESSAGE', 'Failed to like the blog')
@@ -120,8 +122,6 @@ const App = () => {
     }
   }
 
-  const createBlogFormRef = useRef()
-
   return (
     <UserContext.Provider value={{ user, userDispatch, login }}>
       <NotificationContext.Provider
@@ -132,26 +132,31 @@ const App = () => {
 
           {user && (
             <div>
-              <Blogs
-                removeBlog={removeBlog}
-                updateBlogLike={updateBlogLike}
-                blogs={blogs}
-                handleLogout={handleLogout}
-              />
+              <Notification />
+              <Routes>
+                <Route
+                  path="/blogs"
+                  element={
+                    <Blogs
+                      removeBlog={removeBlog}
+                      updateBlogLike={updateBlogLike}
+                      blogs={blogs}
+                      handleLogout={handleLogout}
+                    />
+                  }
+                />
 
-              <Togglable
-                btnLabel={'create new blog'}
-                cancelBtnLabel={'cancel'}
-                ref={createBlogFormRef}
-              >
-                <CreateBlogsForm createNewBlog={createNewBlog} />
-              </Togglable>
-              <Togglable
-                btnLabel={'show all users'}
-                cancelBtnLabel={'hide users'}
-              >
-                <Users />
-              </Togglable>
+                <Route
+                  path="/createblog"
+                  element={<CreateBlogsForm createNewBlog={createNewBlog} />}
+                />
+                <Route path="/users/*" element={<Users />} />
+                <Route path="/users/:id" element={<User />} />
+                <Route
+                  path="/blogs/:blog"
+                  element={<BlogView updateBlogLike={updateBlogLike} />}
+                />
+              </Routes>
             </div>
           )}
         </div>

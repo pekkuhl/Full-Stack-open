@@ -2,6 +2,7 @@ import Blog from './Blog'
 import Notification from './Notification'
 import { useContext } from 'react'
 import UserContext from '../UserContext'
+import { Link } from 'react-router'
 
 const Blogs = ({ blogs, handleLogout, updateBlogLike, removeBlog }) => {
   const { user } = useContext(UserContext)
@@ -14,7 +15,6 @@ const Blogs = ({ blogs, handleLogout, updateBlogLike, removeBlog }) => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification />
       <form>
         <p>
           logged in as {user && user.name}{' '}
@@ -22,6 +22,14 @@ const Blogs = ({ blogs, handleLogout, updateBlogLike, removeBlog }) => {
             logout
           </button>
         </p>
+        <div>
+          <Link to="/createBlog">
+            <button>create new blog</button>
+          </Link>
+          <Link to="/users">
+            <button>Users</button>
+          </Link>
+        </div>
         {blogs.isLoading && <div> loading blogs </div>}
         {blogs.isError && <div> failed to load blogs </div>}
         {blogs.isSuccess &&
