@@ -9,6 +9,8 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   }
 
+  console.log('-->', blog)
+
   return (
     <div style={blogStyle}>
       <NavLink to={`/blogs/${blog.id}`}>

@@ -134,6 +134,7 @@ const App = () => {
           {user && (
             <div>
               <NavMenu handleLogout={handleLogout} />
+              <h2>blog app</h2>
               <Notification />
               <Routes>
                 <Route
@@ -155,7 +156,7 @@ const App = () => {
                 <Route path="/users/*" element={<Users />} />
                 <Route path="/users/:id" element={<User />} />
                 <Route
-                  path="/blogs/:blog"
+                  path="/blogs/:id"
                   element={<BlogView updateBlogLike={updateBlogLike} />}
                 />
               </Routes>
