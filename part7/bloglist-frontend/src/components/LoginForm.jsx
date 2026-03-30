@@ -6,6 +6,7 @@ import { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { useNavigate } from 'react-router'
+import { Button, Form, Container } from 'react-bootstrap'
 
 const LoginForm = () => {
   const navigate = useNavigate()
@@ -33,34 +34,33 @@ const LoginForm = () => {
   }
 
   return (
-    <div>
+    <Container>
       <h2>log in to application</h2>
       <Notification />
-      <form onSubmit={handleLogin}>
+      <Form onSubmit={handleLogin}>
         <div>
-          <label>
+          <Form.Label>
             username
-            <input
+            <Form.Control
               type="text"
               value={username}
               onChange={({ target }) => setUsername(target.value)}
             />
-          </label>
+          </Form.Label>
         </div>
         <div>
-          <label>
-            {' '}
+          <Form.Label>
             password
-            <input
+            <Form.Control
               type="password"
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />
-          </label>
+          </Form.Label>
         </div>
-        <button type="submit"> login </button>
-      </form>
-    </div>
+        <Button type="submit"> login </Button>
+      </Form>
+    </Container>
   )
 }
 

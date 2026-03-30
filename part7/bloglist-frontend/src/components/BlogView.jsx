@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import blogService from '../services/blogs'
 import { useParams, NavLink } from 'react-router'
 import CommentArea from './CommentArea'
+import { Button, Container, Card } from 'react-bootstrap'
 
 const BlogView = ({ updateBlogLike }) => {
   const blogs = useQuery({
@@ -16,21 +17,34 @@ const BlogView = ({ updateBlogLike }) => {
     const blog = blogData.find((b) => b.id === blogId)
 
     return (
-      <div>
-        <h2>
-          {blog.title} {blog.author}
-        </h2>
-        <p>{blog.url}</p>
-        <p>
-          {blog.likes}
-          <button onClick={() => updateBlogLike(blog.id)}>like</button>
-        </p>
-        <p>added by {blog.author}</p>
+      <Container className="mb-1">
+        <Card className="mb-3">
+          <Card.Body>
+            <Card.Title>
+              {blog.title} by {blog.author}
+            </Card.Title>
+            <Card.Link>{blog.url}</Card.Link>
+            <Card.Text>Likes {blog.likes}</Card.Text>
+            <Card.Text>added by {blog.author}</Card.Text>
+          </Card.Body>
+        </Card>
+
+        <Button
+          variant="outline-success"
+          className="mb-3"
+          type="button"
+          onClick={() => updateBlogLike(blog.id)}
+        >
+          like
+        </Button>
+
         <CommentArea blog={blog} />
         <NavLink to={`/blogs`}>
-          <button>back</button>
+          <Button type="button" variant="outline-primary">
+            back
+          </Button>
         </NavLink>
-      </div>
+      </Container>
     )
   }
 }

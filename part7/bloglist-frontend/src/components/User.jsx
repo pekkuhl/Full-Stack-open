@@ -1,6 +1,7 @@
 import { useParams, NavLink } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
 import userService from '../services/users'
+import { Button } from 'react-bootstrap'
 
 const User = () => {
   const id = useParams().id
@@ -29,7 +30,7 @@ const User = () => {
           })}
         </ul>
         <NavLink to={'/users'}>
-          <button>back to users</button>
+          <Button>back to users</Button>
         </NavLink>
       </div>
     )

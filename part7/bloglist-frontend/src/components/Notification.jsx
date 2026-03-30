@@ -6,7 +6,7 @@ const Notification = () => {
 
   const successMessageStyle = {
     color: 'green',
-    background: 'lightgrey',
+    background: 'white',
     fontSize: '20px',
     borderStyle: 'solid',
     borderRadius: '5px',
@@ -16,7 +16,7 @@ const Notification = () => {
 
   const errorMessageStyle = {
     color: 'red',
-    background: 'lightgrey',
+    background: 'white',
     fontSize: '20px',
     borderStyle: 'solid',
     borderRadius: '5px',

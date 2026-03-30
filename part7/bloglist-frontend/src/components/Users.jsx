@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import userService from '../services/users'
 import { NavLink } from 'react-router'
+import { Table, Button } from 'react-bootstrap'
 
 const Users = () => {
   const users = useQuery({
@@ -18,11 +19,15 @@ const Users = () => {
     console.log(users.data)
     return (
       <div>
-        <table style={{ backgroundColor: 'lightgrey' }}>
+        <Table bordered>
           <thead>
             <tr>
-              <th scope="col">Users</th>
-              <th scope="col">Blogs created</th>
+              <th scope="col" style={{ backgroundColor: 'rgb(201, 210, 252)' }}>
+                Users{' '}
+              </th>
+              <th scope="col" style={{ backgroundColor: 'rgb(201, 210, 252)' }}>
+                Blogs created
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -31,13 +36,13 @@ const Users = () => {
                 <th scope="row">
                   <NavLink to={`/users/${user.id}`}>{user.name}</NavLink>{' '}
                 </th>
-                <td style={{ textAlign: 'center' }}>{user.blogs.length}</td>
+                <td>{user.blogs.length}</td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
         <NavLink to="/blogs">
-          <button>Close users</button>
+          <Button>Close users</Button>
         </NavLink>
       </div>
     )

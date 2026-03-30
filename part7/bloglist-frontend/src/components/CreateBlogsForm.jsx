@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router'
+import { Button, Form } from 'react-bootstrap'
 
 const CreateBlogsForm = ({ createNewBlog }) => {
   const navigate = useNavigate()
@@ -11,7 +12,7 @@ const CreateBlogsForm = ({ createNewBlog }) => {
     <div>
       <h1>Create new blog</h1>
 
-      <form
+      <Form
         onSubmit={(e) => {
           e.preventDefault()
           createNewBlog(title, author, url)
@@ -22,40 +23,42 @@ const CreateBlogsForm = ({ createNewBlog }) => {
         }}
       >
         <div>
-          <label>
+          <Form.Label>
             title:
-            <input
+            <Form.Control
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-          </label>
+          </Form.Label>
         </div>
         <div>
-          <label>
+          <Form.Label>
             author:
-            <input
+            <Form.Control
               type="text"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
             />
-          </label>
+          </Form.Label>
         </div>
         <div>
-          <label>
+          <Form.Label>
             url:
-            <input
+            <Form.Control
               type="text"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
-          </label>
+          </Form.Label>
         </div>
-        <button type="submit">create</button>
+        <Button variant="outline-success" type="submit">
+          create
+        </Button>
         <NavLink to="/blogs">
-          <button>cancel</button>
+          <Button variant="outline-danger">cancel</Button>
         </NavLink>
-      </form>
+      </Form>
     </div>
   )
 }

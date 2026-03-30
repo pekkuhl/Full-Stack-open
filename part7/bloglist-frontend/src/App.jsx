@@ -128,13 +128,13 @@ const App = () => {
       <NotificationContext.Provider
         value={{ notification, notificationDispatch, createNotification }}
       >
-        <div>
+        <div className="container">
           {!user && <LoginForm />}
 
           {user && (
             <div>
               <NavMenu handleLogout={handleLogout} />
-              <h2>blog app</h2>
+              <h2>Blog app</h2>
               <Notification />
               <Routes>
                 <Route
